@@ -1,171 +1,71 @@
-require('dotenv').config();
+process.env.NTBA_FIX_319 = 1;
 const TelegramBot = require('node-telegram-bot-api');
+const token = '1103650145:AAEW7Q3b3raimpT5Ftm892K3jYGtn9rM0zE';
 
-const token = process.env.TOKEN;
+const bot = new TelegramBot(token, {polling: true});
 
-// Created instance of TelegramBot
-const bot = new TelegramBot(token, {
-    polling: true
-});
-
-// In-memory storage
-const URLs = [];
-const URLLabels = [];
-let tempSiteURL = '';
-
-// Listener (handler) for telegram's /bookmark event
-bot.onText(/\/bookmark/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const url = match.input.split(' ')[1];
-    // 'msg' is the received Message from Telegram
-    // 'match' is the result of executing the regexp above on the text content
-    // of the message
-
-    if (url === undefined) {
-        bot.sendMessage(
-            chatId,
-            'Please provide URL of article!',
-        );
-        return;
+bot.on('message', (msg) => {
+    bot.sendMessage(msg.chat.id, msg.text);
+    
+    var Hi = "hi";
+    if (msg.text.toString().toLowerCase().indexOf(Hi) === 0) {
+        // bot.sendMessage(msg.chat.id, "How are you " + msg.from.first_name);
+        // bot.sendMessage(msg.chat.id,"Hello dear user");
+        // bot.sendMessage(msg.chat.id,"<b>bold</b> \n <i>italic</i> \n <em>italic with em</em> \n <a href=\"http://www.learnershood.com/\">inline URL</a> \n <code>inline fixed-width code</code> \n <pre>pre-formatted fixed-width code block</pre>" ,{parse_mode : "HTML"});
+        bot.sendMessage(msg.chat.id, 
+            '*bold text* \n _italic text_ \n [text](http://www.example.com/) `inline fixed-width code`' ,{parse_mode : "Markdown"});
     }
-
-    URLs.push(url);
-    bot.sendMessage(
-        chatId,
-        'URL has been successfully saved!',
-    );
-});
-
-// Listener (handler) for telegram's /label event
-bot.onText(/\/label/, (msg, match) => {
-    const chatId = msg.chat.id;
-    const url = match.input.split(' ')[1];
-
-    if (url === undefined) {
-        bot.sendMessage(
-            chatId,
-            'Please provide URL of article!',
-        );
-        return;
-    }
-
-    tempSiteURL = url;
-    bot.sendMessage(
-        chatId,
-        'URL has been successfully saved!',
-        {
-            reply_markup: {
-                inline_keyboard: [[
-                    {
-                        text: 'Development',
-                        callback_data: 'development'
-                    }, {
-                        text: 'Lifestyle',
-                        callback_data: 'lifestyle'
-                    }, {
-                        text: 'Other',
-                        callback_data: 'other'
-                    }
-                ]]
-            }
-        }
-    );
-});
-
-// Listener (handler) for callback data from /label command
-bot.on('callback_query', (callbackQuery) => {
-    const message = callbackQuery.message;
-    const category = callbackQuery.data;
-
-    URLLabels.push({
-        url: tempSiteURL,
-        label: category,
-    });
-
-    tempSiteURL = '';
-
-    bot.sendMessage(message.chat.id, `URL has been labeled with category "${category}"`);
-});
-
-// Listener (handler) for showcasing different keyboard layout
-bot.onText(/\/keyboard/, (msg) => {
-    bot.sendMessage(msg.chat.id, 'Alternative keybaord layout', {
-        'reply_markup': {
-            'keyboard': [['Sample text', 'Second sample'], ['Keyboard'], ['I\'m robot']],
-            resize_keyboard: true,
-            one_time_keyboard: true,
-            force_reply: true,
-        }
-    });
-});
-
-// Inline keyboard options
-const inlineKeyboard = {
-    reply_markup: {
-        inline_keyboard: [
-            [
-                {
-                    text: 'YES',
-                    callback_data: JSON.stringify({
-                        'command': 'mycommand1',
-                        'answer': 'YES'
-                    })
-                },
-                {
-                    text: 'NO',
-                    callback_data: JSON.stringify({
-                        'command': 'mycommand1',
-                        'answer': 'NO'
-                    })
-                },
-            ]
-        ]
-    }
-};
-
-// Listener (handler) for showcasing inline keyboard layout
-bot.onText(/\/inline/, (msg) => {
-    bot.sendMessage(msg.chat.id, 'You have to agree with me, OK?', inlineKeyboard);
-});
-
-// Keyboard layout for requesting phone number access
-const requestPhoneKeyboard = {
-    "reply_markup": {
-        "one_time_keyboard": true,
-        "keyboard": [[{
-            text: "My phone number",
-            request_contact: true,
-            one_time_keyboard: true
-        }], ["Cancel"]]
-    }
-};
-
-// Listener (handler) for retrieving phone number
-bot.onText(/\/phone/, (msg) => {
-    bot.sendMessage(msg.chat.id, 'Can we get access to your phone number?', requestPhoneKeyboard);
-});
-
-// Handler for phone number request when user gives permission
-bot.on('contact', async (msg) => {
-    const phone = msg.contact.phone_number;
-    bot.sendMessage(msg.chat.id, `Phone number saved: ${phone}`);
-})
-
-// Listener (handler) for telegram's /start event
-// This event happened when you start the conversation with both by the very first time
-// Provide the list of available commands
-bot.onText(/\/start/, (msg) => {
-    const chatId = msg.chat.id;
-    bot.sendMessage(
-        chatId,
-        `
-            Welcome at <b>ArticleBot</b>, thank you for using my service
-      
-            Available commands:
+    var bye = "bye";
+    if (msg.text.toString().toLowerCase().includes(bye)) {
+        // bot.sendMessage(msg.chat.id, "Hope to see you around again , Bye");
         
-            /bookmark <b>URL</b> - save interesting article URL
-        `, {
-            parse_mode: 'HTML',
-        }
+        bot.sendMessage(msg.chat.id, "Have a nice day " + msg.from.first_name); 
+    } 
+    var robot = "I'm robot";
+    if(msg.text.indexOf(robot) === 0){
+        bot.sendMessage(msg.chat.id, "Yes I'm robot but not in that way!");
+    }
+
+    var location = "location";
+    if (msg.text.indexOf(location) === 0) {
+        bot.sendLocation(msg.chat.id,44.97108, -104.27719);
+        bot.sendMessage(msg.chat.id, "Here is the point");
+    }
+    
+    var picture = "picture";
+    if(msg.text.indexOf(picture) === 0){
+        let user = bot.getUserProfilePhotos(msg.chat.id);
+        bot.sendPhoto(
+            msg.chat.id, 
+            user, 
+            {caption : "This the image you requested for \n there something else to this"}
+        );
+    }
+});
+
+// bot.onText(/\/start/, (msg) => {
+//     bot.sendMessage(msg.chat.id, "Welcome to the mother fucking bot");
+// });
+
+bot.onText(/\/sendpic/, (msg) => {
+    bot.sendPhoto(
+        msg.chat.id, 
+        "http://learnershood.com/images/pair_programming.png", 
+        {caption : "This the image you requested for \n there something else to this"}
     );
+});
+
+bot.onText(/\/sendaudio/, (msg) => {
+    bot.sendAudio(
+        msg.chat.id, 
+        "https://www.hoerspielbox.de/wp-content/blogs.dir/sites/1/4-4-10002.mp3", 
+        {caption : "This the audio you requested for \n there something else to this"});
+});
+
+bot.onText(/\/start/, (msg) => {
+    bot.sendMessage(msg.chat.id, "Welcome to the mother fucking bot", {
+        "reply_markup": {
+            "keyboard": [["Sample text", "Second sample"],   ["Keyboard"], ["I'm robot"]]
+        }
+    });
 });
