@@ -44,5 +44,5 @@ let openWeatherUrl = process.env.OPENWEATHER_API_URL;
 
 // });
 
-app.listen(port, () => console.log("Telegram bot is listening on port "+ port + "!"));
+// app.listen(port, () => console.log("Telegram bot is listening on port "+ port + "!"));
 
