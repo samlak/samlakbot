@@ -8,6 +8,7 @@ const bot = new TelegramBot(process.env.TELEGRAM_API_TOKEN, {polling: true});
 
 let openWeatherUrl = process.env.OPENWEATHER_API_URL;
 
+const port = process.env.PORT || 3000;
 
 var app = express();
 app.use(bodyParser.json());
@@ -43,5 +44,5 @@ app.post("/start", function(req, res) {
 
 });
 
-app.listen(3000, () => console.log("Telegram bot is listening on port 3000!"));
+app.listen(port, () => console.log("Telegram bot is listening on port "+ port + "!"));
 
